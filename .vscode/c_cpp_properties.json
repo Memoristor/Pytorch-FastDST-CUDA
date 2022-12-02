@@ -3,8 +3,10 @@
         {
             "name": "Linux",
             "includePath": [
-                "${workspaceFolder}/**",
-                "/home/dandri/libtorch/**"
+                "${workspaceFolder}/include/**",
+                "/home/dandri/libtorch/include/**",
+                "/usr/local/cuda-11.0/include/**",
+                "/usr/include/python3.6m/**"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",
