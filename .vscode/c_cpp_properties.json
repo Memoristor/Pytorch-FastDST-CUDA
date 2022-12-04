@@ -5,8 +5,8 @@
             "includePath": [
                 "${workspaceFolder}/include/**",
                 "/home/dandri/libtorch/include/**",
-                "/usr/local/cuda-11.0/include/**",
-                "/usr/include/python3.6m/**"
+                "/usr/local/cuda/include/**",
+                "/home/dandri/anaconda3/envs/pytorch/include/**"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",

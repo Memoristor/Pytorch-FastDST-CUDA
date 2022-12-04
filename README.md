@@ -4,18 +4,20 @@
 
 ## Introduction
 
-
 ## Environment
 
 * Ubuntu 16.04.5 LTS (8G RAM)
-* Pytorch 1.7.0 (CUDA 11.0)
-* RTX2070S
-* Python 3.7
+* RTX2070s (CUDA 11.3, cuDNN v8.6.0 for CUDA 11.x)
+* Libtorch 1.10.1 (Release version, for CUDA 11.3)
+* Pytorch 1.7.0
+* Python 3.7.9
 
 ## Installation
 
-
 ## Usage
 
-
 ## Citation
+
+## License
+
+Pytorch-FastDST-CUDA has a GPL-3.0 license, as found in the [LICENSE](./LICENSE) file.
