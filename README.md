@@ -6,9 +6,9 @@
 
 ## Environment
 
-* Ubuntu 16.04.5 LTS (8G RAM)
+* Ubuntu 18.04.5 LTS (8G RAM)
 * RTX2070s (CUDA 11.3, cuDNN v8.6.0 for CUDA 11.x)
-* Libtorch 1.10.1 (Release version, for CUDA 11.3)
+* Libtorch 1.13.0 (Release version, for CUDA 11.6)
 * Pytorch 1.7.0
 * Python 3.7.9
 
