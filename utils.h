@@ -1,8 +1,10 @@
 #ifndef __CUDA_UTILS_H
 #define __CUDA_UTILS_H
 
+#include <ATen/ATen.h>
 #include <torch/torch.h>
 #include <torch/extension.h>
+
 #include <cuda.h>
 #include <cuda_runtime.h>
 
