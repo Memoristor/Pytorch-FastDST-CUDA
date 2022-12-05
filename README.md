@@ -14,21 +14,17 @@
 
 ## Installation
 
-* Pybind11 is used for Python and C++ interactions. Activate your envrionment and install these packages:
+```shell
+# Pybind11 is used for Python and C++ interactions. Activate your envrionment and install these packages:
+conda activate <your_conda_environment>
+conda install pytest pybind11
 
-  ```
-  conda install pytest pybind11
-  ```
-* Enter the project folder and install the library:
+# Enter the project folder and install the library:
+python setup.py install
 
-  ```
-  python setup.py install
-  ```
-* Run a test:
-
-  ```
-  python test_demo.py
-  ```
+# Run a test:
+python test_demo.py
+```
 
 ## Usage
 
