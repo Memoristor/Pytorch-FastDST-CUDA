@@ -1,6 +1,6 @@
 {
     "files.associations": {
-        "ostream": "cpp",
+        "random": "cpp",
         "array": "cpp",
         "atomic": "cpp",
         "*.tcc": "cpp",
@@ -38,7 +38,6 @@
         "memory_resource": "cpp",
         "numeric": "cpp",
         "optional": "cpp",
-        "random": "cpp",
         "ratio": "cpp",
         "set": "cpp",
         "string": "cpp",
@@ -56,6 +55,7 @@
         "limits": "cpp",
         "mutex": "cpp",
         "new": "cpp",
+        "ostream": "cpp",
         "shared_mutex": "cpp",
         "sstream": "cpp",
         "stdexcept": "cpp",
@@ -66,7 +66,6 @@
         "valarray": "cpp",
         "variant": "cpp",
         "__nullptr": "cpp",
-        "queue": "cpp",
-        "stack": "cpp"
+        "__split_buffer": "cpp"
     }
 }

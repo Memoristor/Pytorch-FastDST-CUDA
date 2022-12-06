@@ -5,8 +5,11 @@ import torch
 
 import fdstlib
 
-input = torch.randn((3, 128, 128, 3)).float().cuda()
+input = torch.randn((1, 1, 3, 3)).float().cuda()
 size = 4
 
-fdstlib.native_dctii_2d(input, size, False)
+output = fdstlib.nativeDCTII2DForward(input, size, False)
 
+print(input)
+print()
+print(output)
