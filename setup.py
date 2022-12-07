@@ -10,9 +10,6 @@ setup(
     ext_modules=[
         CUDAExtension('fdstlib', glob(os.path.join('source', '*.c*')))
     ],
-    include_dirs=[
-        'include',
-    ],
     cmdclass={
         'build_ext': BuildExtension
     }
