@@ -8,13 +8,13 @@ at::Tensor cudaNativeIDCTII2D(const at::Tensor input, const uint numPoints);
 
 at::Tensor nativeDCTII2D(const at::Tensor input, const uint numPoints, const bool sortCoff) {
     CHECK_4DTENSOR(input);
-    at::Tensor padInput = zeroPadInputTensorToFitDCTPointSize(input, numPoints);
+    at::Tensor padInput = zeroPadInputTensorToFitPointSize(input, numPoints);
     return cudaNativeDCTII2D(padInput, numPoints);
 }
 
 at::Tensor nativeIDCTII2D(const at::Tensor input, const uint numPoints, const bool sortCoff) {
     CHECK_4DTENSOR(input);
-    at::Tensor padInput = zeroPadInputTensorToFitDCTPointSize(input, numPoints);
+    at::Tensor padInput = zeroPadInputTensorToFitPointSize(input, numPoints);
     return cudaNativeIDCTII2D(padInput, numPoints);
 }
 

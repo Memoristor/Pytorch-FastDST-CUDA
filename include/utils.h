@@ -17,8 +17,8 @@ extern "C" {
 #define CHECK_4DTENSOR(x) TORCH_CHECK(x.sizes().size() == 4, #x " must be a 4-D tensor")
 #define CHECK_INPUT(x) CHECK_CUDA(x); CHECK_CONTIGUOUS(x); CHECK_4DTENSOR(x);
 
-at::Tensor zeroPadInputTensorToFitDCTPointSize(const at::Tensor input, const uint numPoints);
-void optimalCUDABlocksAndThreads(const uint numTotalThreads, dim3 &numBlocks, dim3 &threadsPerBlock);
+at::Tensor zeroPadInputTensorToFitPointSize(const at::Tensor input, const uint numPoints);
+void optimalCUDABlocksAndThreadsPerBlock(const uint numTotalThreads, dim3 &numBlocks, dim3 &threadsPerBlock);
 
 #if defined(__cplusplus)
 }
