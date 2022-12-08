@@ -28,11 +28,15 @@ def patch_dct2d(input, point):
 input = torch.randn((1, 3, 1024, 1024)).float().cuda()
 numPoint = 8
 
+
+################################################################################
+
+
 print('=' * 80)
-print('Test DCT-II 2D CUDA vs CPU')
+print('Test DCT 2D CUDA vs CPU')
 
 start_cuda = time.time()
-dct2d_cuda = fdstlib.nativeDCTII2D(input, numPoint, False)
+dct2d_cuda = fdstlib.nativeDCT2D(input, numPoint, False)
 end_cuda = time.time()
 
 start_cpu = time.time()
@@ -41,47 +45,87 @@ dct2d_cpu = torch.from_numpy(dct2d_cpu).float().cuda()
 error = torch.abs(dct2d_cuda - dct2d_cpu)
 end_cpu = time.time()
 
-print(f'... DCT-II-CUDA cost {end_cuda - start_cuda :4.6f} s')
-print(f'... DCT-II-CPU cost {end_cpu - start_cpu :4.6f} s')
-print(f'... DCT-II-CUDA output tensor size: {dct2d_cuda.size()}')
-print(f'... DCT-II-CPU output tensor size: {dct2d_cpu.size()}')
-print(f'... Max error of DCT-II on CUDA and CPU: {torch.max(error) :4.4f}')
-print(f'... Min error of DCT-II on CUDA and CPU: {torch.min(error) :4.4f}')
-print(f'... Average error of DCT-II on CUDA and CPU: {torch.mean(error) :4.4f}')
+print(f'... DCT-CUDA cost {end_cuda - start_cuda :4.6f} s')
+print(f'... DCT-CPU cost {end_cpu - start_cpu :4.6f} s')
+print(f'... DCT-CUDA output tensor size: {dct2d_cuda.size()}')
+print(f'... DCT-CPU output tensor size: {dct2d_cpu.size()}')
+print(f'... Max error of DCT on CUDA and CPU: {torch.max(error) :4.4f}')
+print(f'... Min error of DCT on CUDA and CPU: {torch.min(error) :4.4f}')
+print(f'... Average error of DCT on CUDA and CPU: {torch.mean(error) :4.4f}')
 
 print('=' * 80)
-print('Test DCT-II/IDCT-II 2D')
+print('Test DCT/IDCT 2D')
 
-native_dctii_2d = fdstlib.nativeDCTII2D(input, numPoint, False)
-native_idctii_2d = fdstlib.nativeIDCTII2D(native_dctii_2d, numPoint, False)
-error = torch.abs(native_idctii_2d - input)
+native_dct_2d = fdstlib.nativeDCT2D(input, numPoint, False)
+native_idct_2d = fdstlib.nativeIDCT2D(native_dct_2d, numPoint, False)
+error = torch.abs(native_idct_2d - input)
 
-print(f'... DCT-II-CUDA output tensor size: {native_dctii_2d.size()}')
-print(f'... IDCT-II-CUDA output tensor size: {native_idctii_2d.size()}')
-print(f'... Max error of IDCT-II and input tensor: {torch.max(error) :4.4f}')
-print(f'... Min error of IDCT-II and input tensor: {torch.min(error) :4.4f}')
-print(f'... Average error of IDCT-II and input tensor: {torch.mean(error) :4.4f}')
+print(f'... DCT-CUDA output tensor size: {native_dct_2d.size()}')
+print(f'... IDCT-CUDA output tensor size: {native_idct_2d.size()}')
+print(f'... Max error of IDCT and input tensor: {torch.max(error) :4.4f}')
+print(f'... Min error of IDCT and input tensor: {torch.min(error) :4.4f}')
+print(f'... Average error of IDCT and input tensor: {torch.mean(error) :4.4f}')
 
-print('Test DCT-II processing speed by CUDA')
+print('Test DCT processing speed by CUDA')
 
 iterations = 100
 total_time = 0
 for i in range(iterations):
     start = time.time()
-    output = fdstlib.nativeDCTII2D(input, numPoint, False)
+    output = fdstlib.nativeDCT2D(input, numPoint, False)
     end = time.time()
     total_time += end - start
     
-print(f'... DCT-II-CUDA average processing time: {total_time / iterations * 1e6 :4.4f} us')
+print(f'... DCT-CUDA average processing time: {total_time / iterations * 1e6 :4.4f} us')
 
 iterations = 100
 total_time = 0
 for i in range(iterations):
     start = time.time()
-    output = fdstlib.nativeIDCTII2D(input, numPoint, False)
+    output = fdstlib.nativeIDCT2D(input, numPoint, False)
     end = time.time()
     total_time += end - start
     
-print(f'... IDCT-II by CUDA average processing time: {total_time / iterations * 1e6 :4.4f} us')
+print(f'... IDCT by CUDA average processing time: {total_time / iterations * 1e6 :4.4f} us')
+
+################################################################################
 
 print('=' * 80)
+print('Test DST/IDST 2D')
+
+native_dst_2d = fdstlib.nativeDST2D(input, numPoint, False)
+native_idst_2d = fdstlib.nativeIDST2D(native_dst_2d, numPoint, False)
+error = torch.abs(native_idst_2d - input)
+
+print(f'... DST-CUDA output tensor size: {native_dst_2d.size()}')
+print(f'... IDST-CUDA output tensor size: {native_idst_2d.size()}')
+print(f'... Max error of IDST and input tensor: {torch.max(error) :4.4f}')
+print(f'... Min error of IDST and input tensor: {torch.min(error) :4.4f}')
+print(f'... Average error of IDST and input tensor: {torch.mean(error) :4.4f}')
+
+print('Test DST processing speed by CUDA')
+
+iterations = 100
+total_time = 0
+for i in range(iterations):
+    start = time.time()
+    output = fdstlib.nativeDST2D(input, numPoint, False)
+    end = time.time()
+    total_time += end - start
+    
+print(f'... DST-CUDA average processing time: {total_time / iterations * 1e6 :4.4f} us')
+
+iterations = 100
+total_time = 0
+for i in range(iterations):
+    start = time.time()
+    output = fdstlib.nativeIDST2D(input, numPoint, False)
+    end = time.time()
+    total_time += end - start
+    
+print(f'... IDST by CUDA average processing time: {total_time / iterations * 1e6 :4.4f} us')
+
+################################################################################
+
+print('Test completed!')
+
