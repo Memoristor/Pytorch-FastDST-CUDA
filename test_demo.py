@@ -127,5 +127,42 @@ print(f'... IDST by CUDA average processing time: {total_time / iterations * 1e6
 
 ################################################################################
 
+print('=' * 80)
+print('Test DHT/IDHT 2D')
+
+native_dht_2d = fdstlib.nativeDHT2D(input, numPoint, False)
+native_idht_2d = fdstlib.nativeIDHT2D(native_dht_2d, numPoint, False)
+error = torch.abs(native_idht_2d - input)
+
+print(f'... DHT-CUDA output tensor size: {native_dht_2d.size()}')
+print(f'... IDHT-CUDA output tensor size: {native_idht_2d.size()}')
+print(f'... Max error of IDHT and input tensor: {torch.max(error) :4.4f}')
+print(f'... Min error of IDHT and input tensor: {torch.min(error) :4.4f}')
+print(f'... Average error of IDHT and input tensor: {torch.mean(error) :4.4f}')
+
+print('Test DHT processing speed by CUDA')
+
+iterations = 100
+total_time = 0
+for i in range(iterations):
+    start = time.time()
+    output = fdstlib.nativeDHT2D(input, numPoint, False)
+    end = time.time()
+    total_time += end - start
+    
+print(f'... DHT-CUDA average processing time: {total_time / iterations * 1e6 :4.4f} us')
+
+iterations = 100
+total_time = 0
+for i in range(iterations):
+    start = time.time()
+    output = fdstlib.nativeIDHT2D(input, numPoint, False)
+    end = time.time()
+    total_time += end - start
+    
+print(f'... IDHT by CUDA average processing time: {total_time / iterations * 1e6 :4.4f} us')
+
+################################################################################
+
 print('Test completed!')
 
