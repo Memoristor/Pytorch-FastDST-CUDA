@@ -4,7 +4,7 @@
 #include "../include/utils.h"
 
 template <typename scalar_t>
-__global__ void cudaNativeDCTII2DKernel(const uint numTotalThreads, const uint batchSizeDim, const uint channelDim, const uint heightDim, const uint widthDim, const scalar_t* __restrict__ input, const uint numPoints, scalar_t* __restrict__ output) {
+__global__ void cudaNativeDCT2DKernel(const uint numTotalThreads, const uint batchSizeDim, const uint channelDim, const uint heightDim, const uint widthDim, const scalar_t* __restrict__ input, const uint numPoints, scalar_t* __restrict__ output) {
     
     const uint idx = (blockIdx.z * gridDim.y * gridDim.x + blockIdx.y * gridDim.x + blockIdx.x) * blockDim.x + threadIdx.x;
     if (idx < numTotalThreads) {
@@ -48,7 +48,7 @@ __global__ void cudaNativeDCTII2DKernel(const uint numTotalThreads, const uint b
 }
 
 template <typename scalar_t>
-__global__ void cudaNativeIDCTII2DKernel(const uint numTotalThreads, const uint batchSizeDim, const uint channelDim, const uint heightDim, const uint widthDim, const scalar_t* __restrict__ input, const uint numPoints, scalar_t* __restrict__ output) {
+__global__ void cudaNativeIDCT2DKernel(const uint numTotalThreads, const uint batchSizeDim, const uint channelDim, const uint heightDim, const uint widthDim, const scalar_t* __restrict__ input, const uint numPoints, scalar_t* __restrict__ output) {
     
     const uint idx = (blockIdx.z * gridDim.y * gridDim.x + blockIdx.y * gridDim.x + blockIdx.x) * blockDim.x + threadIdx.x;
     if (idx < numTotalThreads) {
@@ -91,7 +91,7 @@ __global__ void cudaNativeIDCTII2DKernel(const uint numTotalThreads, const uint 
     __syncthreads();
 }
 
-at::Tensor cudaNativeDCTII2D(const at::Tensor input, const uint numPoints) {
+at::Tensor cudaNativeDCT2D(const at::Tensor input, const uint numPoints) {
     at::IntList inputSize = input.sizes();
     int batchSize = inputSize[0];
     int channel = inputSize[1];
@@ -106,8 +106,8 @@ at::Tensor cudaNativeDCTII2D(const at::Tensor input, const uint numPoints) {
     uint numTotalThreads = batchSize * channel * height * width / (numPoints * numPoints);
     optimalCUDABlocksAndThreadsPerBlock(numTotalThreads, numBlocks, threadsPerBlock);
 
-    AT_DISPATCH_FLOATING_TYPES(input.type(), "cudaNativeDCTII2D", ([&] {
-                cudaNativeDCTII2DKernel<scalar_t><<<numBlocks, threadsPerBlock>>>(
+    AT_DISPATCH_FLOATING_TYPES(input.type(), "cudaNativeDCT2D", ([&] {
+                cudaNativeDCT2DKernel<scalar_t><<<numBlocks, threadsPerBlock>>>(
                     numTotalThreads, batchSize, channel, height / numPoints, width / numPoints, input.data<scalar_t>(), numPoints, output.data<scalar_t>()
                 );
             }
@@ -117,7 +117,7 @@ at::Tensor cudaNativeDCTII2D(const at::Tensor input, const uint numPoints) {
     return output;
 }
 
-at::Tensor cudaNativeIDCTII2D(const at::Tensor input, const uint numPoints) {
+at::Tensor cudaNativeIDCT2D(const at::Tensor input, const uint numPoints) {
     at::IntList inputSize = input.sizes();
     int batchSize = inputSize[0];
     int channel = inputSize[1];
@@ -132,8 +132,8 @@ at::Tensor cudaNativeIDCTII2D(const at::Tensor input, const uint numPoints) {
     uint numTotalThreads = batchSize * channel * height * width / (numPoints * numPoints);
     optimalCUDABlocksAndThreadsPerBlock(numTotalThreads, numBlocks, threadsPerBlock);
 
-    AT_DISPATCH_FLOATING_TYPES(input.type(), "cudaNativeIDCTII2D", ([&] {
-                cudaNativeIDCTII2DKernel<scalar_t><<<numBlocks, threadsPerBlock>>>(
+    AT_DISPATCH_FLOATING_TYPES(input.type(), "cudaNativeIDCT2D", ([&] {
+                cudaNativeIDCT2DKernel<scalar_t><<<numBlocks, threadsPerBlock>>>(
                     numTotalThreads, batchSize, channel, height / numPoints, width / numPoints, input.data<scalar_t>(), numPoints, output.data<scalar_t>()
                 );
             }
