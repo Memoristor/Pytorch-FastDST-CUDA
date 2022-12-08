@@ -15,11 +15,15 @@
 ## Installation
 
 ```shell
+# Clone the project repository
+git clone https://github.com/Memoristor/Pytorch-FastDST-CUDA.git
+
 # Pybind11 is used for Python and C++ interactions. Activate your envrionment and install these packages:
 conda activate <your_conda_environment>
 conda install pytest pybind11
 
 # Enter the project folder and install the library:
+cd Pytorch-FastDST-CUDA/
 python setup.py install
 
 # Run a test:
