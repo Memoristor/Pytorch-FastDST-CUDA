@@ -1,14 +1,14 @@
 
 #include "../include/utils.h"
 
-at::Tensor nativeDCT2D(const at::Tensor input, const uint numPoints, const bool sortCoff);
-at::Tensor nativeIDCT2D(const at::Tensor input, const uint numPoints, const bool sortCoff);
+at::Tensor nativeDCT2D(const at::Tensor input, const uint numPoints);
+at::Tensor nativeIDCT2D(const at::Tensor input, const uint numPoints);
 
-at::Tensor nativeDST2D(const at::Tensor input, const uint numPoints, const bool sortCoff);
-at::Tensor nativeIDST2D(const at::Tensor input, const uint numPoints, const bool sortCoff);
+at::Tensor nativeDST2D(const at::Tensor input, const uint numPoints);
+at::Tensor nativeIDST2D(const at::Tensor input, const uint numPoints);
 
-at::Tensor nativeDHT2D(const at::Tensor input, const uint numPoints, const bool sortCoff);
-at::Tensor nativeIDHT2D(const at::Tensor input, const uint numPoints, const bool sortCoff);
+at::Tensor nativeDHT2D(const at::Tensor input, const uint numPoints);
+at::Tensor nativeIDHT2D(const at::Tensor input, const uint numPoints);
 
 PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
   m.def("nativeDCT2D", &nativeDCT2D, "Native 2D-DCT (CUDA)");

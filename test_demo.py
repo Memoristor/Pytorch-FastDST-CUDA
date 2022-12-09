@@ -36,7 +36,7 @@ print('=' * 80)
 print('Test DCT 2D CUDA vs CPU')
 
 start_cuda = time.time()
-dct2d_cuda = fdstlib.nativeDCT2D(input, numPoint, False)
+dct2d_cuda = fdstlib.nativeDCT2D(input, numPoint)
 end_cuda = time.time()
 
 start_cpu = time.time()
@@ -56,8 +56,8 @@ print(f'... Average error of DCT on CUDA and CPU: {torch.mean(error) :4.4f}')
 print('=' * 80)
 print('Test DCT/IDCT 2D')
 
-native_dct_2d = fdstlib.nativeDCT2D(input, numPoint, False)
-native_idct_2d = fdstlib.nativeIDCT2D(native_dct_2d, numPoint, False)
+native_dct_2d = fdstlib.nativeDCT2D(input, numPoint)
+native_idct_2d = fdstlib.nativeIDCT2D(native_dct_2d, numPoint)
 error = torch.abs(native_idct_2d - input)
 
 print(f'... DCT-CUDA output tensor size: {native_dct_2d.size()}')
@@ -72,7 +72,7 @@ iterations = 100
 total_time = 0
 for i in range(iterations):
     start = time.time()
-    output = fdstlib.nativeDCT2D(input, numPoint, False)
+    output = fdstlib.nativeDCT2D(input, numPoint)
     end = time.time()
     total_time += end - start
     
@@ -82,7 +82,7 @@ iterations = 100
 total_time = 0
 for i in range(iterations):
     start = time.time()
-    output = fdstlib.nativeIDCT2D(input, numPoint, False)
+    output = fdstlib.nativeIDCT2D(input, numPoint)
     end = time.time()
     total_time += end - start
     
@@ -93,8 +93,8 @@ print(f'... IDCT by CUDA average processing time: {total_time / iterations * 1e6
 print('=' * 80)
 print('Test DST/IDST 2D')
 
-native_dst_2d = fdstlib.nativeDST2D(input, numPoint, False)
-native_idst_2d = fdstlib.nativeIDST2D(native_dst_2d, numPoint, False)
+native_dst_2d = fdstlib.nativeDST2D(input, numPoint)
+native_idst_2d = fdstlib.nativeIDST2D(native_dst_2d, numPoint)
 error = torch.abs(native_idst_2d - input)
 
 print(f'... DST-CUDA output tensor size: {native_dst_2d.size()}')
@@ -109,7 +109,7 @@ iterations = 100
 total_time = 0
 for i in range(iterations):
     start = time.time()
-    output = fdstlib.nativeDST2D(input, numPoint, False)
+    output = fdstlib.nativeDST2D(input, numPoint)
     end = time.time()
     total_time += end - start
     
@@ -119,7 +119,7 @@ iterations = 100
 total_time = 0
 for i in range(iterations):
     start = time.time()
-    output = fdstlib.nativeIDST2D(input, numPoint, False)
+    output = fdstlib.nativeIDST2D(input, numPoint)
     end = time.time()
     total_time += end - start
     
@@ -130,8 +130,8 @@ print(f'... IDST by CUDA average processing time: {total_time / iterations * 1e6
 print('=' * 80)
 print('Test DHT/IDHT 2D')
 
-native_dht_2d = fdstlib.nativeDHT2D(input, numPoint, False)
-native_idht_2d = fdstlib.nativeIDHT2D(native_dht_2d, numPoint, False)
+native_dht_2d = fdstlib.nativeDHT2D(input, numPoint)
+native_idht_2d = fdstlib.nativeIDHT2D(native_dht_2d, numPoint)
 error = torch.abs(native_idht_2d - input)
 
 print(f'... DHT-CUDA output tensor size: {native_dht_2d.size()}')
@@ -146,7 +146,7 @@ iterations = 100
 total_time = 0
 for i in range(iterations):
     start = time.time()
-    output = fdstlib.nativeDHT2D(input, numPoint, False)
+    output = fdstlib.nativeDHT2D(input, numPoint)
     end = time.time()
     total_time += end - start
     
@@ -156,7 +156,7 @@ iterations = 100
 total_time = 0
 for i in range(iterations):
     start = time.time()
-    output = fdstlib.nativeIDHT2D(input, numPoint, False)
+    output = fdstlib.nativeIDHT2D(input, numPoint)
     end = time.time()
     total_time += end - start
     
