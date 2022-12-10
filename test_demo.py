@@ -25,7 +25,7 @@ def patch_dct2d(input, point):
     return input
 
 
-input = torch.randn((1, 3, 1024, 1024)).float().cuda()
+input = torch.ones((1, 3, 1024, 1024)).float().cuda()
 numPoint = 8
 
 
@@ -161,6 +161,21 @@ for i in range(iterations):
     total_time += end - start
     
 print(f'... IDHT by CUDA average processing time: {total_time / iterations * 1e6 :4.4f} us')
+
+################################################################################
+
+print('=' * 80)
+print('Test Sort Coefficients By Frequency')
+
+sort_dct_frequency = fdstlib.sortCoefficients(native_dct_2d, numPoint, 0);
+recover_dct_frequency = fdstlib.recoverCoefficients(sort_dct_frequency, numPoint, 0);
+error = torch.abs(native_dct_2d - recover_dct_frequency)
+
+print(f'... Sort by frequency output tensor size: {sort_dct_frequency.size()}')
+print(f'... Recover by frequency output tensor size: {recover_dct_frequency.size()}')
+print(f'... Max error of recovered and input tensor: {torch.max(error) :4.4f}')
+print(f'... Min error of recovered and input tensor: {torch.min(error) :4.4f}')
+print(f'... Average error of recovered and input tensor: {torch.mean(error) :4.4f}')
 
 ################################################################################
 

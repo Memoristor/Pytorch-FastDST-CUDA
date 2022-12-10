@@ -45,3 +45,28 @@ void optimalCUDABlocksAndThreadsPerBlock(const uint numTotalThreads, dim3 &numBl
         }
     }
 }
+
+void calculateZigzag(uint *zigzag, uint numPoints)
+{
+	uint isX = 0;
+	uint t = 0, i = 0, d = numPoints * numPoints, xy[2] = {0, 0};
+	uint mid = numPoints * numPoints / 2 + numPoints % 2;
+ 
+	while (d != mid)
+	{
+		if (xy[isX] < i)
+			xy[isX]++;
+
+		if (xy[!isX] > 0)
+			xy[!isX]--;
+ 
+		if (xy[isX] == i)
+		{
+			i++;
+			isX = !isX;
+		}
+ 
+		zigzag[xy[0] * numPoints + xy[1]] = t++;
+		zigzag[(numPoints - 1 - xy[0]) * numPoints + (numPoints - 1 - xy[1])] = --d;
+	}
+}
