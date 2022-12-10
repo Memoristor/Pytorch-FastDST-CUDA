@@ -23,7 +23,7 @@ __global__ void cudaNativeDST2DKernel(const uint numTotalThreads, const uint bat
             for (uint v = 0; v < numPoints; v++) {
                 uint wv = w * numPoints + v;
 
-                uint spectral_idx = n * chwDim * numPointsPow2 + c * hwDim * numPointsPow2 + hk * widthDim * numPoints + wv; 
+                uint spectralIdx = n * chwDim * numPointsPow2 + c * hwDim * numPointsPow2 + hk * widthDim * numPoints + wv; 
 
                 for (uint i = 0; i < numPoints; i++) {
                     uint hi = h * numPoints + i;
@@ -33,8 +33,8 @@ __global__ void cudaNativeDST2DKernel(const uint numTotalThreads, const uint bat
                         uint wj = w * numPoints + j;
                         float sin_j_v = sinf((j + 1.0f) * (v + 1.0f) * M_PI / (numPoints + 1));
                         
-                        uint special_idx = n * chwDim * numPointsPow2 + c * hwDim * numPointsPow2 + hi * widthDim * numPoints + wj; 
-                        output[spectral_idx] += input[special_idx] * (2.0f / (numPoints + 1)) * sin_i_k * sin_j_v;                    
+                        uint specialIdx = n * chwDim * numPointsPow2 + c * hwDim * numPointsPow2 + hi * widthDim * numPoints + wj; 
+                        output[spectralIdx] += input[specialIdx] * (2.0f / (numPoints + 1)) * sin_i_k * sin_j_v;                    
                     }
                 }
             }
@@ -64,7 +64,7 @@ __global__ void cudaNativeIDST2DKernel(const uint numTotalThreads, const uint ba
             for (uint j = 0; j < numPoints; j++) {
                 uint wj = w * numPoints + j;
                 
-                uint special_idx = n * chwDim * numPointsPow2 + c * hwDim * numPointsPow2 + hi * widthDim * numPoints + wj; 
+                uint specialIdx = n * chwDim * numPointsPow2 + c * hwDim * numPointsPow2 + hi * widthDim * numPoints + wj; 
 
                 for (uint k = 0; k < numPoints; k++) {
                     uint hk = h * numPoints + k;
@@ -74,8 +74,8 @@ __global__ void cudaNativeIDST2DKernel(const uint numTotalThreads, const uint ba
                         uint wv = w * numPoints + v;
                         float sin_j_v = sinf((j + 1.0f) * (v + 1.0f) * M_PI / (numPoints + 1));
 
-                        uint spectral_idx = n * chwDim * numPointsPow2 + c * hwDim * numPointsPow2 + hk * widthDim * numPoints + wv; 
-                        output[special_idx] += input[spectral_idx] * (2.0f / (numPoints + 1)) * sin_i_k * sin_j_v;
+                        uint spectralIdx = n * chwDim * numPointsPow2 + c * hwDim * numPointsPow2 + hk * widthDim * numPoints + wv; 
+                        output[specialIdx] += input[spectralIdx] * (2.0f / (numPoints + 1)) * sin_i_k * sin_j_v;
                     }
                 }
             }
