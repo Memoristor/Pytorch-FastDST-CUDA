@@ -25,7 +25,7 @@ def patch_dct2d(input, point):
     return input
 
 
-input = torch.ones((1, 3, 1024, 1024)).float().cuda()
+input = torch.randn((1, 3, 1024, 1024)).float().cuda()
 numPoint = 8
 
 
