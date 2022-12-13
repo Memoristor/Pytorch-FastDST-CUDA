@@ -78,8 +78,8 @@ at::Tensor cudaSortCoefficientsByZigzag(const at::Tensor input, const uint numPo
     calculateZigzag(zigzag, numPoints);
 
     uint *zigzagGPU;
-    CHECK(cudaMalloc((void **) &zigzagGPU, numPoints * numPoints * sizeof(uint)));
-    CHECK(cudaMemcpy(zigzagGPU, zigzag, numPoints * numPoints * sizeof(uint), cudaMemcpyHostToDevice));
+    CHECK_CUDA_ERROR(cudaMalloc((void **) &zigzagGPU, numPoints * numPoints * sizeof(uint)));
+    CHECK_CUDA_ERROR(cudaMemcpy(zigzagGPU, zigzag, numPoints * numPoints * sizeof(uint), cudaMemcpyHostToDevice));
 
     at::Tensor output = at::zeros({batchSize, channel * numPoints * numPoints, height / numPoints, width / numPoints}, input.options());
 
@@ -91,13 +91,13 @@ at::Tensor cudaSortCoefficientsByZigzag(const at::Tensor input, const uint numPo
 
     AT_DISPATCH_FLOATING_TYPES(input.type(), "cudaSortCoefficientsByZigzag", ([&] {
                 cudaSortCoefficientsByZigzagKernel<scalar_t><<<numBlocks, threadsPerBlock>>>(
-                    numTotalThreads, batchSize, channel, height / numPoints, width / numPoints, input.data<scalar_t>(), numPoints, zigzagGPU, priority, output.data<scalar_t>()
+                    numTotalThreads, batchSize, channel, height / numPoints, width / numPoints, input.data_ptr<scalar_t>(), numPoints, zigzagGPU, priority, output.data_ptr<scalar_t>()
                 );
             }
         )
     );
 
-    CHECK(cudaFree(zigzagGPU));
+    CHECK_CUDA_ERROR(cudaFree(zigzagGPU));
 
     return output;
 }
@@ -114,8 +114,8 @@ at::Tensor cudaRecoverCoefficientsByZigzag(const at::Tensor input, const uint nu
     calculateZigzag(zigzag, numPoints);
 
     uint *zigzagGPU;
-    CHECK(cudaMalloc((void **) &zigzagGPU, numPoints * numPoints * sizeof(uint)));
-    CHECK(cudaMemcpy(zigzagGPU, zigzag, numPoints * numPoints * sizeof(uint), cudaMemcpyHostToDevice));
+    CHECK_CUDA_ERROR(cudaMalloc((void **) &zigzagGPU, numPoints * numPoints * sizeof(uint)));
+    CHECK_CUDA_ERROR(cudaMemcpy(zigzagGPU, zigzag, numPoints * numPoints * sizeof(uint), cudaMemcpyHostToDevice));
 
     at::Tensor output = at::zeros({batchSize, channel / (numPoints * numPoints), height * numPoints, width * numPoints}, input.options());
 
@@ -127,13 +127,13 @@ at::Tensor cudaRecoverCoefficientsByZigzag(const at::Tensor input, const uint nu
 
     AT_DISPATCH_FLOATING_TYPES(input.type(), "cudaRecoverCoefficientsByZigzag", ([&] {
                 cudaRecoverCoefficientsByZigzagKernel<scalar_t><<<numBlocks, threadsPerBlock>>>(
-                    numTotalThreads, batchSize, channel / (numPoints * numPoints), height, width, input.data<scalar_t>(), numPoints, zigzagGPU, priority, output.data<scalar_t>()
+                    numTotalThreads, batchSize, channel / (numPoints * numPoints), height, width, input.data_ptr<scalar_t>(), numPoints, zigzagGPU, priority, output.data_ptr<scalar_t>()
                 );
             }
         )
     );
 
-    CHECK(cudaFree(zigzagGPU));
+    CHECK_CUDA_ERROR(cudaFree(zigzagGPU));
 
     return output;
 }

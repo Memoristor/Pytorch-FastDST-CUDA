@@ -108,7 +108,7 @@ at::Tensor cudaNativeDCT2D(const at::Tensor input, const uint numPoints) {
 
     AT_DISPATCH_FLOATING_TYPES(input.type(), "cudaNativeDCT2D", ([&] {
                 cudaNativeDCT2DKernel<scalar_t><<<numBlocks, threadsPerBlock>>>(
-                    numTotalThreads, batchSize, channel, height / numPoints, width / numPoints, input.data<scalar_t>(), numPoints, output.data<scalar_t>()
+                    numTotalThreads, batchSize, channel, height / numPoints, width / numPoints, input.data_ptr<scalar_t>(), numPoints, output.data_ptr<scalar_t>()
                 );
             }
         )
@@ -134,7 +134,7 @@ at::Tensor cudaNativeIDCT2D(const at::Tensor input, const uint numPoints) {
 
     AT_DISPATCH_FLOATING_TYPES(input.type(), "cudaNativeIDCT2D", ([&] {
                 cudaNativeIDCT2DKernel<scalar_t><<<numBlocks, threadsPerBlock>>>(
-                    numTotalThreads, batchSize, channel, height / numPoints, width / numPoints, input.data<scalar_t>(), numPoints, output.data<scalar_t>()
+                    numTotalThreads, batchSize, channel, height / numPoints, width / numPoints, input.data_ptr<scalar_t>(), numPoints, output.data_ptr<scalar_t>()
                 );
             }
         )
