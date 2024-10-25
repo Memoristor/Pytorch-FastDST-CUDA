@@ -28,8 +28,8 @@ extern "C" {
 #define CHECK_4DTENSOR(x) TORCH_CHECK(x.sizes().size() == 4, #x " must be a 4-D tensor")
 #define CHECK_INPUT(x) CHECK_CUDA(x); CHECK_CONTIGUOUS(x); CHECK_4DTENSOR(x);
 
-#define SORT_FREQUENCY_FIRST 1
-#define SORT_CHANNELS_FIRST 0
+#define SORT_BY_FREQUENCIES 1
+#define SORT_BY_CHANNELS 0
 
 at::Tensor zeroPadInputTensorToFitPointSize(const at::Tensor input, const uint numPoints);
 void optimalCUDABlocksAndThreadsPerBlock(const uint numTotalThreads, dim3 &numBlocks, dim3 &threadsPerBlock);

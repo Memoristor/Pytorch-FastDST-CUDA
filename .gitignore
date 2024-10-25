@@ -170,3 +170,9 @@ dmypy.json
 # Pyre type checker
 .pyre/
 Footer
+
+# SFTP
+.vscode/sftp.json
+
+# Examples
+examples/

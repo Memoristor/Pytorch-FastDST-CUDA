@@ -3,17 +3,17 @@
 
 #include "../include/utils.h"
 
-at::Tensor cudaNativeDST2D(const at::Tensor input, const uint numPoints);
-at::Tensor cudaNativeIDST2D(const at::Tensor input, const uint numPoints);
+at::Tensor cudaNaiveDST2D(const at::Tensor input, const uint numPoints);
+at::Tensor cudaNaiveIDST2D(const at::Tensor input, const uint numPoints);
 
-at::Tensor nativeDST2D(const at::Tensor input, const uint numPoints) {
-    CHECK_4DTENSOR(input);
+at::Tensor naiveDST2D(const at::Tensor input, const uint numPoints) {
+    CHECK_INPUT(input);
     at::Tensor padInput = zeroPadInputTensorToFitPointSize(input, numPoints);
-    return cudaNativeDST2D(padInput, numPoints);
+    return cudaNaiveDST2D(padInput, numPoints);
 }
 
-at::Tensor nativeIDST2D(const at::Tensor input, const uint numPoints) {
-    CHECK_4DTENSOR(input);
+at::Tensor naiveIDST2D(const at::Tensor input, const uint numPoints) {
+    CHECK_INPUT(input);
     at::Tensor padInput = zeroPadInputTensorToFitPointSize(input, numPoints);
-    return cudaNativeIDST2D(padInput, numPoints);
+    return cudaNaiveIDST2D(padInput, numPoints);
 }

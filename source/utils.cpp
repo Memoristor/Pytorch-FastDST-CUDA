@@ -46,27 +46,42 @@ void optimalCUDABlocksAndThreadsPerBlock(const uint numTotalThreads, dim3 &numBl
     }
 }
 
-void calculateZigzag(uint *zigzag, uint numPoints)
+void calculateZigzag(uint32_t *zigzag, uint32_t numPoints)
 {
-	uint isX = 0;
-	uint t = 0, i = 0, d = numPoints * numPoints, xy[2] = {0, 0};
-	uint mid = numPoints * numPoints / 2 + numPoints % 2;
- 
-	while (d != mid)
-	{
-		if (xy[isX] < i)
-			xy[isX]++;
+	int row = 0, col = 0;
+    int goingUp = 1; // 1: going up, 0: going down
 
-		if (xy[!isX] > 0)
-			xy[!isX]--;
- 
-		if (xy[isX] == i)
-		{
-			i++;
-			isX = !isX;
-		}
- 
-		zigzag[xy[0] * numPoints + xy[1]] = t++;
-		zigzag[(numPoints - 1 - xy[0]) * numPoints + (numPoints - 1 - xy[1])] = --d;
-	}
+    for (int i = 0; i < numPoints * numPoints; ++i) {
+        zigzag[i] = row * numPoints + col;
+
+        if (goingUp) {
+            if (col == numPoints - 1) { 
+                // Reach the right-most boundary and turn downward
+				row++;
+                goingUp = 0;
+            } else if (row == 0) { 
+				// Reach the top-most boundary and turn downward
+                col++;
+                goingUp = 0;
+            } else { 
+				// Continue going up
+                row--;
+                col++;
+            }
+        } else {
+            if (row == numPoints - 1) {
+				// Reach the down-most boundary and turn upward
+                col++;
+                goingUp = 1;
+            } else if (col == 0) {
+				// Reach the left-most boundary and turn upward
+                row++;
+                goingUp = 1;
+            } else { 
+				//Continue going down
+                row++;
+                col--;
+            }
+        }
+    }
 }

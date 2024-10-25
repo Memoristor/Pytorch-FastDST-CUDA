@@ -4,11 +4,17 @@ from glob import glob
 import os
 
 setup(
-    name='fdstlib',
-    version="0.1.0",
+    name='fadst',
+    version="0.2.0",
     author="cjdeng",
+    author_email="cjdeng@std.uestc.edu.cn",
     ext_modules=[
-        CUDAExtension('fdstlib', glob(os.path.join('source', '*.c*')))
+        CUDAExtension(
+            name='fadst', 
+            sources=glob(os.path.join('source', '*.c*')),
+            extra_compile_args={'cxx': ['-g'], 'nvcc': ['-O2']},
+            extra_link_flags=['-Wl,--no-as-needed', '-lcuda'],
+        )
     ],
     cmdclass={
         'build_ext': BuildExtension

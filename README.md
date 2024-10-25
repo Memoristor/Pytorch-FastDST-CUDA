@@ -4,37 +4,74 @@
 
 ## Introduction
 
-* The running environment is not strict, as long as you can run `test_demo.py` successfully.
+* This repository includes fast transforms using CUDA, such as DCT, DST, and DHT.
 
-## Environment
+* Directly processing of tensors of the torch is allowed.
 
-* Ubuntu 18.04.5 LTS (8G RAM, Not strict)
-* RTX2070s (CUDA 11.0, cuDNN v8.6.0 for CUDA 11.x, Required)
-* Libtorch 1.13.0 (Release version, for CUDA 11.6, Optional)
-* Pytorch 1.7.0 (Not strict)
-* Python 3.7.9 (Not strict)
+* Distributed data-parallel mode is supported.
+
+## Development Environment
+
+* Ubuntu 22.04.5 LTS, 8G RAM
+
+* RTX2070s CUDA 12.3, cuDNN v8.9.7 for CUDA 12.x
+
+* Pytorch 2.3.1+cu121
+
+* Python 3.9
+
+* Libtorch 1.13.0, Release version, for CUDA 11.6 (Optional)
 
 ## Installation
+
+### Step 1 : Install [CUDA Toolkit](https://developer.nvidia.com/cuda-downloads) and [CuDNN (Optional)](https://developer.nvidia.com/cudnn-downloads)
+
+```shell
+# Install CUDA Toolkit
+# Note: The PyTorch CUDA version must be compatible with the CUDA toolkit. 
+# If the Pytorch CUDA version is 11, the CUDA toolkit version should also be 11.
+sudo sh cuda_12.3.0_545.23.06_linux.run
+
+# Install CuDNN 
+sudo dpkg -i cudnn-local-repo-ubuntu2204-8.9.7.29_1.0-1_amd64.deb
+
+# Install libcudnn
+apt-cache policy libcudnn8
+sudo apt install libcudnn8=8.9.7.29-1+cuda12.2
+sudo apt install libcudnn8-dev=8.9.7.29-1+cuda12.2
+sudo apt install libcudnn8-samples=8.9.7.29-1+cuda12.2
+
+# Install FreeImage
+sudo apt-get install libfreeimage3 libfreeimage-dev
+
+# Run demo
+cp -r /usr/src/cudnn_samples_v8/ ~/Downloads/
+cd ~/Downloads/cudnn_samples_v8/mnistCUDNN/
+make clean && make
+./mnistCUDNN
+```
+
+### Step 2: Install packages in the python environment
 
 ```shell
 # Clone the project repository
 git clone https://github.com/Memoristor/Pytorch-FastDST-CUDA.git
 
-# Pybind11 is used for Python and C++ interactions. Activate your envrionment and install these packages:
+# Pybind11 is used for Python and C++ interactions. 
+# Activate your envrionment and install these packages.
 conda activate <your_conda_environment>
-conda install pytest pybind11
+conda install pytest pybind11 ninja
 
-# Enter the project folder and install the library:
+# Go to the project folder and install the library
 cd Pytorch-FastDST-CUDA/
 python setup.py install
-
-# Run a test:
-python test_demo.py
 ```
 
-## Usage
+### Step 3: Run demos
 
-## Citation
+```shell
+CUDA_VISIBLE_DEVICES="0" python demo.py
+```
 
 ## License
 
