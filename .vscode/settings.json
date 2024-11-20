@@ -57,5 +57,7 @@
         "thread": "cpp",
         "typeinfo": "cpp",
         "__nullptr": "cpp"
-    }
+    },
+    "C_Cpp.errorSquiggles": "enabled",
+    "editor.formatOnSave": true,
 }

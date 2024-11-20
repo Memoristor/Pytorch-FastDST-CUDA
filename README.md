@@ -4,27 +4,13 @@
 
 ## Introduction
 
-* This repository includes fast transforms using CUDA, such as DCT, DST, and DHT.
-
-* Directly processing of tensors of the torch is allowed.
-
-* Distributed data-parallel mode is supported.
-
-## Development Environment
-
-* Ubuntu 22.04.5 LTS, 8G RAM
-
-* RTX2070s CUDA 12.3, cuDNN v8.9.7 for CUDA 12.x
-
-* Pytorch 2.3.1+cu121
-
-* Python 3.9
-
-* Libtorch 1.13.0, Release version, for CUDA 11.6 (Optional)
+This repository provides fast implementations of various transforms using CUDA, including Discrete Cosine Transform (DCT), Discrete Sine Transform (DST), and Discrete Hartley Transform (DHT), enabling efficient computation for large-scale data processing. It supports the direct processing of PyTorch tensors, seamlessly integrating into PyTorch workflows without requiring additional data conversions. Furthermore, the repository is designed to support operating in a distributed data-parallel mode, ensuring scalability and performance across multiple GPUs for high-performance computing tasks.
 
 ## Installation
 
-### Step 1 : Install [CUDA Toolkit](https://developer.nvidia.com/cuda-downloads) and [CuDNN (Optional)](https://developer.nvidia.com/cudnn-downloads)
+The installation of this plugin has been successfully tested in the Ubuntu environment. It is particularly important to ensure that the CUDA Driver, CUDA Toolkit, and the corresponding version of PyTorch-GPU are installed and properly configured beforehand. Note that the versions of CUDA and PyTorch-GPU must match, such as both being CUDA 11.x or CUDA 12.x.
+
+#### Step 1 : Install [CUDA Toolkit](https://developer.nvidia.com/cuda-downloads) and [CuDNN (Optional)](https://developer.nvidia.com/cudnn-downloads)
 
 ```shell
 # Install CUDA Toolkit
@@ -51,7 +37,7 @@ make clean && make
 ./mnistCUDNN
 ```
 
-### Step 2: Install packages in the python environment
+#### Step 2: Install packages in the python environment
 
 ```shell
 # Clone the project repository
@@ -59,15 +45,14 @@ git clone https://github.com/Memoristor/Pytorch-FastDST-CUDA.git
 
 # Pybind11 is used for Python and C++ interactions. 
 # Activate your envrionment and install these packages.
-conda activate <your_conda_environment>
-conda install pytest pybind11 ninja
+pip install pytest pybind11 ninja
 
 # Go to the project folder and install the library
 cd Pytorch-FastDST-CUDA/
 python setup.py install
 ```
 
-### Step 3: Run demos
+#### Step 3: Run demos
 
 ```shell
 CUDA_VISIBLE_DEVICES="0" python demo.py

@@ -7,7 +7,7 @@
                 "${workspaceFolder}/include/**",
                 "/home/dandri/libtorch/include/**",
                 "/usr/local/cuda/include/**",
-                "/usr/include/python3.6m/**"
+                "/usr/include/python3.10/**"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",

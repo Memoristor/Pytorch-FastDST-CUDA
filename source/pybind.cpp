@@ -13,7 +13,6 @@ at::Tensor naiveIDHT2D(const at::Tensor input, const uint numPoints);
 at::Tensor sortCoefficients(const at::Tensor input, const uint numPoints, const uint priority);
 at::Tensor recoverCoefficients(const at::Tensor input, const uint numPoints, const uint priority);
 
-
 PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
   m.def("naiveDCT2D", &naiveDCT2D, "Naive 2D-DCT (CUDA)");
   m.def("naiveIDCT2D", &naiveIDCT2D, "Naive 2D-IDCT (CUDA)");
