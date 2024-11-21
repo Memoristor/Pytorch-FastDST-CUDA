@@ -7,6 +7,8 @@
 #include <torch/extension.h>
 #include <torch/torch.h>
 
+#include <iostream>
+
 #if defined(__cplusplus)
 extern "C" {
 #endif
@@ -24,19 +26,15 @@ extern "C" {
 
 #define CHECK_CUDA(x) TORCH_CHECK(x.is_cuda(), #x " must be a CUDA tensor")
 #define CHECK_CONTIGUOUS(x) TORCH_CHECK(x.is_contiguous(), #x " must be contiguous")
-#define CHECK_4DTENSOR(x) TORCH_CHECK(x.sizes().size() == 4, #x " must be a 4-D tensor")
+#define CHECK_TENSORDIM(x, y) TORCH_CHECK(x.sizes().size() >= y, #x "'s dimension must be >= " #y)
 #define CHECK_INPUT(x) \
   CHECK_CUDA(x);       \
-  CHECK_CONTIGUOUS(x); \
-  CHECK_4DTENSOR(x);
+  CHECK_CONTIGUOUS(x);
 
-#define SORT_BY_FREQUENCIES 1
-#define SORT_BY_CHANNELS 0
-
-at::Tensor zeroPadInputTensorToFitPointSize(const at::Tensor input, const uint numPoints);
+void calculateZigzag(uint *zigzag, uint points);
+at::Tensor zeroPadInputTensorToFitPointSize(const at::Tensor input, const uint points);
 void optimalCUDABlocksAndThreadsPerBlock(const uint numTotalThreads, dim3 &numBlocks,
                                          dim3 &threadsPerBlock);
-void calculateZigzag(uint *zigzag, uint numPoints);
 
 #if defined(__cplusplus)
 }

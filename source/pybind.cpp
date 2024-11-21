@@ -1,17 +1,17 @@
 
 #include "../include/utils.h"
 
-at::Tensor naiveDCT2D(const at::Tensor input, const uint numPoints);
-at::Tensor naiveIDCT2D(const at::Tensor input, const uint numPoints);
+at::Tensor naiveDCT2D(const at::Tensor input, const uint points);
+at::Tensor naiveIDCT2D(const at::Tensor input, const uint points);
 
-at::Tensor naiveDST2D(const at::Tensor input, const uint numPoints);
-at::Tensor naiveIDST2D(const at::Tensor input, const uint numPoints);
+at::Tensor naiveDST2D(const at::Tensor input, const uint points);
+at::Tensor naiveIDST2D(const at::Tensor input, const uint points);
 
-at::Tensor naiveDHT2D(const at::Tensor input, const uint numPoints);
-at::Tensor naiveIDHT2D(const at::Tensor input, const uint numPoints);
+at::Tensor naiveDHT2D(const at::Tensor input, const uint points);
+at::Tensor naiveIDHT2D(const at::Tensor input, const uint points);
 
-at::Tensor sortCoefficients(const at::Tensor input, const uint numPoints, const uint priority);
-at::Tensor recoverCoefficients(const at::Tensor input, const uint numPoints, const uint priority);
+at::Tensor sortCoefficients(const at::Tensor input, const uint points);
+at::Tensor recoverCoefficients(const at::Tensor input, const uint points);
 
 PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
   m.def("naiveDCT2D", &naiveDCT2D, "Naive 2D-DCT (CUDA)");

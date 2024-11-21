@@ -14,8 +14,8 @@ def load_image(fpath: str):
     """
     image = cv2.imread(fpath)
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-    image = torch.from_numpy(image).unsqueeze(0)
-    image = image.permute(0, 3, 1, 2).float().contiguous()
+    image = torch.from_numpy(image)
+    image = image.permute(2, 0, 1).float().contiguous()
     image = image.cuda()
     return image
     
@@ -67,13 +67,12 @@ def dct2d(input: torch.Tensor, point: int):
 def patch_dct2d(input: torch.Tensor, point: int):
     """2D block-wise DCT using scipy
     """
-    [N, C, H, W] = input.shape
-    for n in range(N):
-        for c in range(C):
-            for h in range(int(H / point)):
-                for w in range(int(W / point)):
-                    patch = input[n, c, h * point: (h + 1) * point, w * point: (w + 1) * point]
-                    input[n, c, h * point: (h + 1) * point, w * point: (w + 1) * point] = dct2d(patch, point)
+    [C, H, W] = input.shape
+    for c in range(C):
+        for h in range(int(H / point)):
+            for w in range(int(W / point)):
+                patch = input[c, h * point: (h + 1) * point, w * point: (w + 1) * point]
+                input[c, h * point: (h + 1) * point, w * point: (w + 1) * point] = dct2d(patch, point)
     return input
 
 
@@ -153,35 +152,18 @@ if __name__ == '__main__':
     check_error(error)
 
 
-    print(pretty_tag('test DCT(x) -> SORT(DCT(x), 0), error = abs(DCT(x) - RECOVER(SORT(DCT(x), 0), 0))'))
+    print(pretty_tag('test DCT(x) -> SORT(DCT(x)), error = abs(DCT(x) - RECOVER(SORT(DCT(x))))'))
             
-    sort_dct_by_channels = fadst.sortCoefficients(naive_dct_2d, block, 0)
-    recover_dct_by_channels = fadst.recoverCoefficients(sort_dct_by_channels, block, 0)
-    error = torch.abs(naive_dct_2d - recover_dct_by_channels)
+    sort_dct = fadst.sortCoefficients(naive_dct_2d, block)
+    recover_dct = fadst.recoverCoefficients(sort_dct, block)
+    error = torch.abs(naive_dct_2d - recover_dct)
     
     check_error(error)
     
 
-    print(pretty_tag('test DCT(x) -> SORT(DCT(x), 1), error = abs(DCT(x) - RECOVER(SORT(DCT(x), 1), 1))'))
+    print(pretty_tag('test y = RECOVER(SORT(DCT(x))), y -> IDCT(y), error = abs(x - IDCT(y))'))
             
-    sort_dct_by_frequencies = fadst.sortCoefficients(naive_dct_2d, block, 1)
-    recover_dct_by_frequencies = fadst.recoverCoefficients(sort_dct_by_frequencies, block, 1)
-    error = torch.abs(naive_dct_2d - recover_dct_by_frequencies)
-    
-    check_error(error)
-
-
-    print(pretty_tag('test y = RECOVER(SORT(DCT(x), 0), 0), y -> IDCT(y), error = abs(x - IDCT(y))'))
-            
-    recover_idct = fadst.naiveIDCT2D(recover_dct_by_channels, block)
-    error = torch.abs(x - recover_idct)
-    
-    check_error(error)
-    
-
-    print(pretty_tag('test y = RECOVER(SORT(DCT(x), 1), 1), y -> IDCT(y), error = abs(x - IDCT(y))'))
-            
-    recover_idct = fadst.naiveIDCT2D(recover_dct_by_frequencies, block)
+    recover_idct = fadst.naiveIDCT2D(recover_dct, block)
     error = torch.abs(x - recover_idct)
     
     check_error(error)
