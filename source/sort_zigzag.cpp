@@ -1,5 +1,5 @@
 
-#include "../../include/utils.h"
+#include "../include/utils.h"
 
 at::Tensor cudaSortCoefficientsByZigzag(const at::Tensor input, const uint points);
 at::Tensor cudaRecoverCoefficientsByZigzag(const at::Tensor input, const uint points);

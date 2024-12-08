@@ -1,5 +1,5 @@
 
-#include "../../include/utils.h"
+#include "../include/utils.h"
 
 at::Tensor cudaNaiveDCT2D(const at::Tensor input, const uint points);
 at::Tensor cudaNaiveIDCT2D(const at::Tensor input, const uint points);

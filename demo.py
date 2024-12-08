@@ -14,7 +14,7 @@ def load_image(fpath: str):
     """
     image = cv2.imread(fpath)
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-    image = torch.from_numpy(image)
+    image = torch.from_numpy(image) / 255.0
     image = image.permute(2, 0, 1).float().contiguous()
     image = image.cuda()
     return image
@@ -32,26 +32,13 @@ def pretty_tag(tag: str):
     return res
 
 
-def check_error(error: torch.Tensor):
+def check_error(error: torch.Tensor, error_thresh:float=5e-3):
     """Check the min error, max error, mean error.
     """
-    res = True
-    if error.min() > 1e-3:
-        print(f'[Warning] The minimum error, {error.min():4.4f}, is too large')
-        res = False
-    else:
-        print(f'[Info] The minimum error is {error.min():4.4f}')
-    if error.max() > 1e-3:
-        print(f'[Warning] The maximum error, {error.max():4.4f}, is too large')
-        res = False
-    else:
-        print(f'[Info] The maximum error is {error.max():4.4f}')
-    if error.mean() > 1e-3:
-        print(f'[Warning] The average error, {error.mean():4.4f}, is too large')
-        res = False
-    else:
-        print(f'[Info] The average error is {error.mean():4.4f}')
-    return res
+    cnt = (error>error_thresh).int().sum()
+    print(f'[Info] There are {cnt} elements ({(cnt/error.numel())*100.0:4.4f}%) '
+          f'out of {error.numel()} elements are above the threshold.')
+    print(f' .. Max: {error.max():4.4f}, Min: {error.min():4.4f}, Average: {error.mean():4.4f}')
 
 
 def dct2d(input: torch.Tensor, point: int):

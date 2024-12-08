@@ -68,16 +68,31 @@ import torch
 
 block = 4
 
-x1 = torch.randn(1024, 1024)  # 2-D tensor
+x1 = torch.randn(1024, 1024).cuda()  # 2-D tensor
 dct2d = fadst.naiveDCT2D(x1, block)  # shape: [1024, 1024]
 sorted2d = fadst.sortCoefficients(dct2d, block)  # shape: [16, 256, 256]
 recover2d = fadst.recoverCoefficients(sorted2d, block)  # shape: [1024, 1024]
 
-x2 = torch.randn(3, 1024, 1024)  # 3-D tensor
+x2 = torch.randn(3, 1024, 1024).cuda()  # 3-D tensor
 dct2d = fadst.naiveDCT2D(x2, block)  # shape: [3, 1024, 1024]
 sorted2d = fadst.sortCoefficients(dct2d, block)  # shape: [3, 16, 256, 256]
 recover2d = fadst.recoverCoefficients(sorted2d, block)  # shape: [3, 1024, 1024]
 ```
+
+Examples for double tensor and half-float tensor
+```python
+import fadst
+import torch
+
+block = 4
+
+x1 = torch.randn(1024, 1024).double().cuda()  # 2-D tensor
+dct2d = fadst.naiveDCT2D(x1, block)  # type: double
+
+x2 = torch.randn(1024, 1024).half().cuda()  # 2-D tensor
+dct2d = fadst.naiveDCT2D(x1, block)  # type: half
+```
+
 
 ## License
 

@@ -1,5 +1,7 @@
+#ifndef __TORCH_DHT_KERNEL_CUH
+#define __TORCH_DHT_KERNEL_CUH
 
-#include "../../include/utils.h"
+#include "utils.h"
 
 template <typename scalar_t>
 __global__ void cudaNaiveDHT2DKernel(const uint totalThreads, const scalar_t* __restrict__ input,
@@ -27,12 +29,12 @@ __global__ void cudaNaiveDHT2DKernel(const uint totalThreads, const scalar_t* __
 
         for (uint i = 0; i < points; i++) {
           uint hi = h * points + i;
-          float sin_cos_i_k =
+          scalar_t sin_cos_i_k =
               cosf(2.0f * M_PI * i * k / points) + sinf(2.0f * M_PI * i * k / points);
 
           for (uint j = 0; j < points; j++) {
             uint wj = w * points + j;
-            float sin_cos_j_v =
+            scalar_t sin_cos_j_v =
                 cosf(2.0f * M_PI * j * v / points) + sinf(2.0f * M_PI * j * v / points);
 
             uint specialIdx = n * hwDim * p2 + hi * wDim * points + wj;
@@ -73,12 +75,12 @@ __global__ void cudaNaiveIDHT2DKernel(const uint totalThreads, const scalar_t* _
 
         for (uint k = 0; k < points; k++) {
           uint hk = h * points + k;
-          float sin_cos_i_k =
+          scalar_t sin_cos_i_k =
               cosf(2.0f * M_PI * i * k / points) + sinf(2.0f * M_PI * i * k / points);
 
           for (uint v = 0; v < points; v++) {
             uint wv = w * points + v;
-            float sin_cos_j_v =
+            scalar_t sin_cos_j_v =
                 cosf(2.0f * M_PI * j * v / points) + sinf(2.0f * M_PI * j * v / points);
 
             uint spectralIdx = n * hwDim * p2 + hk * wDim * points + wv;
@@ -93,46 +95,4 @@ __global__ void cudaNaiveIDHT2DKernel(const uint totalThreads, const scalar_t* _
   __syncthreads();
 }
 
-at::Tensor cudaNaiveDHT2D(const at::Tensor input, const uint points) {
-  at::IntList inputSize = input.sizes();
-  int height = inputSize[inputSize.size() - 2];
-  int width = inputSize[inputSize.size() - 1];
-
-  at::Tensor output = at::zeros_like(input);
-
-  dim3 numBlocks;
-  dim3 threadsPerBlock;
-
-  uint totalThreads = input.numel() / (points * points);
-  optimalCUDABlocksAndThreadsPerBlock(totalThreads, numBlocks, threadsPerBlock);
-
-  AT_DISPATCH_FLOATING_TYPES(input.type(), "cudaNaiveDHT2D", ([&] {
-                               cudaNaiveDHT2DKernel<scalar_t><<<numBlocks, threadsPerBlock>>>(
-                                   totalThreads, input.data_ptr<scalar_t>(), points,
-                                   output.data_ptr<scalar_t>(), height / points, width / points);
-                             }));
-
-  return output;
-}
-
-at::Tensor cudaNaiveIDHT2D(const at::Tensor input, const uint points) {
-  at::IntList inputSize = input.sizes();
-  int height = inputSize[inputSize.size() - 2];
-  int width = inputSize[inputSize.size() - 1];
-
-  at::Tensor output = at::zeros_like(input);
-
-  dim3 numBlocks;
-  dim3 threadsPerBlock;
-
-  uint totalThreads = input.numel() / (points * points);
-  optimalCUDABlocksAndThreadsPerBlock(totalThreads, numBlocks, threadsPerBlock);
-
-  AT_DISPATCH_FLOATING_TYPES(input.type(), "cudaNaiveIDHT2D", ([&] {
-                               cudaNaiveIDHT2DKernel<scalar_t><<<numBlocks, threadsPerBlock>>>(
-                                   totalThreads, input.data_ptr<scalar_t>(), points,
-                                   output.data_ptr<scalar_t>(), height / points, width / points);
-                             }));
-
-  return output;
-}
+#endif /* __TORCH_DHT_KERNEL_CUH */
