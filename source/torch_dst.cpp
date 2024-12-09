@@ -16,13 +16,13 @@ at::Tensor naiveDST2D(const at::Tensor input, const uint points, const bool sort
 at::Tensor naiveIDST2D(const at::Tensor input, const uint points, const bool recoverbyZigzag) {
   CHECK_CUDA(input);
   CHECK_CONTIGUOUS(input);
-  CHECK_EVENDIV(input, -1, points);
-  CHECK_EVENDIV(input, -2, points);
   if (recoverbyZigzag) {
     CHECK_TENSORDIM(input, 3);
     CHECK_DIMEQUAL(input, -3, points * points);
   } else {
     CHECK_TENSORDIM(input, 2);
+    CHECK_EVENDIV(input, -1, points);
+    CHECK_EVENDIV(input, -2, points);
   }
   return cudaNaiveIDST2D(input, points, recoverbyZigzag);
 }
