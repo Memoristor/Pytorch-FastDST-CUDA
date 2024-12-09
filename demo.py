@@ -71,7 +71,7 @@ if __name__ == '__main__':
     print(pretty_tag('test x -> DCT(x), error = abs(DCT_CUDA(x) - DCT_CPU(x))'))
         
     start_cuda = time.time()
-    dct2d_cuda = fadst.naiveDCT2D(x, block)
+    dct2d_cuda = fadst.DCT2d(x, block, False)
     end_cuda = time.time()
 
     start_cpu = time.time()
@@ -87,15 +87,15 @@ if __name__ == '__main__':
     
     print(pretty_tag('test DCT(x) -> x, error = abs(x - IDCT(DCT(x)))'))
         
-    naive_dct_2d = fadst.naiveDCT2D(x, block)
-    naive_idct_2d = fadst.naiveIDCT2D(naive_dct_2d, block)
+    naive_dct_2d = fadst.DCT2d(x, block, False)
+    naive_idct_2d = fadst.IDCT2d(naive_dct_2d, block, False)
     error = torch.abs(naive_idct_2d - x)
 
     iterations = 100
     total_time = 0
     for i in range(iterations):
         start = time.time()
-        output = fadst.naiveDCT2D(x, block)
+        output = fadst.DCT2d(x, block, False)
         end = time.time()
         total_time += end - start
         
@@ -145,14 +145,32 @@ if __name__ == '__main__':
     recover_dct = fadst.recoverCoefficients(sort_dct, block)
     error = torch.abs(naive_dct_2d - recover_dct)
     
+    iterations = 100
+    total_time = 0
+    for i in range(iterations):
+        start = time.time()
+        recover_dct = fadst.recoverCoefficients(sort_dct, block)
+        end = time.time()
+        total_time += end - start
+        
+    print(f'[Info] CUDA average cost {total_time / iterations * 1e6:4.6f} us')
     check_error(error)
     
 
     print(pretty_tag('test y = RECOVER(SORT(DCT(x))), y -> IDCT(y), error = abs(x - IDCT(y))'))
             
-    recover_idct = fadst.naiveIDCT2D(recover_dct, block)
+    recover_idct = fadst.IDCT2d(recover_dct, block, False)
     error = torch.abs(x - recover_idct)
     
+    iterations = 100
+    total_time = 0
+    for i in range(iterations):
+        start = time.time()
+        recover_idct = fadst.IDCT2d(recover_dct, block, False)
+        end = time.time()
+        total_time += end - start
+        
+    print(f'[Info] CUDA average cost {total_time / iterations * 1e6:4.6f} us')
     check_error(error)
     
 
