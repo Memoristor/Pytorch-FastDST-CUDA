@@ -105,15 +105,15 @@ if __name__ == '__main__':
     
     print(pretty_tag('test DST(x) -> x, error = abs(x - IDST(DST(x)))'))
         
-    naive_dst_2d = fadst.naiveDST2D(x, block)
-    naive_idst_2d = fadst.naiveIDST2D(naive_dst_2d, block)
+    naive_dst_2d = fadst.DST2d(x, block, False)
+    naive_idst_2d = fadst.IDST2d(naive_dst_2d, block, False)
     error = torch.abs(naive_idst_2d - x)
 
     iterations = 100
     total_time = 0
     for i in range(iterations):
         start = time.time()
-        output = fadst.naiveDST2D(x, block)
+        output = fadst.DST2d(x, block, False)
         end = time.time()
         total_time += end - start
         
@@ -123,15 +123,15 @@ if __name__ == '__main__':
 
     print(pretty_tag('test DHT(x) -> x, error = abs(x - IDHT(DHT(x)))'))
         
-    naive_dht_2d = fadst.naiveDHT2D(x, block)
-    naive_idht_2d = fadst.naiveIDHT2D(naive_dht_2d, block)
+    naive_dht_2d = fadst.DHT2d(x, block, False)
+    naive_idht_2d = fadst.IDHT2d(naive_dht_2d, block, False)
     error = torch.abs(naive_idht_2d - x)
 
     iterations = 100
     total_time = 0
     for i in range(iterations):
         start = time.time()
-        output = fadst.naiveDHT2D(x, block)
+        output = fadst.DHT2d(x, block, False)
         end = time.time()
         total_time += end - start
         
@@ -141,15 +141,15 @@ if __name__ == '__main__':
 
     print(pretty_tag('test DCT(x) -> SORT(DCT(x)), error = abs(DCT(x) - RECOVER(SORT(DCT(x))))'))
             
-    sort_dct = fadst.sortCoefficients(naive_dct_2d, block)
-    recover_dct = fadst.recoverCoefficients(sort_dct, block)
+    sort_dct = fadst.sort2d(naive_dct_2d, block)
+    recover_dct = fadst.recover2d(sort_dct, block)
     error = torch.abs(naive_dct_2d - recover_dct)
     
     iterations = 100
     total_time = 0
     for i in range(iterations):
         start = time.time()
-        recover_dct = fadst.recoverCoefficients(sort_dct, block)
+        recover_dct = fadst.recover2d(sort_dct, block)
         end = time.time()
         total_time += end - start
         

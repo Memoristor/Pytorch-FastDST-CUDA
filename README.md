@@ -60,6 +60,13 @@ CUDA_VISIBLE_DEVICES="0" python demo.py
 
 ## Example
 
+View the function's description,
+```python
+import fadst
+
+help(fadst.DCT2d)
+```
+
 Computing discrete transformations using the last two dimensions of high-dimensional tensors,
 
 ```python
@@ -69,17 +76,17 @@ import torch
 block = 4
 
 x1 = torch.randn(1024, 1024).cuda()  # 2-D tensor
-dct2d = fadst.naiveDCT2D(x1, block)  # shape: [1024, 1024]
-sorted2d = fadst.sortCoefficients(dct2d, block)  # shape: [16, 256, 256]
-recover2d = fadst.recoverCoefficients(sorted2d, block)  # shape: [1024, 1024]
+dct2d = fadst.DCT2d(x1, block)  # shape: [1024, 1024]
+sorted2d = fadst.sort2d(dct2d, block)  # shape: [16, 256, 256]
+recover2d = fadst.recover2d(sorted2d, block)  # shape: [1024, 1024]
 
 x2 = torch.randn(3, 1024, 1024).cuda()  # 3-D tensor
-dct2d = fadst.naiveDCT2D(x2, block)  # shape: [3, 1024, 1024]
-sorted2d = fadst.sortCoefficients(dct2d, block)  # shape: [3, 16, 256, 256]
-recover2d = fadst.recoverCoefficients(sorted2d, block)  # shape: [3, 1024, 1024]
+dct2d = fadst.DCT2d(x2, block)  # shape: [3, 1024, 1024]
+sorted2d = fadst.sort2d(dct2d, block)  # shape: [3, 16, 256, 256]
+recover2d = fadst.recover2d(sorted2d, block)  # shape: [3, 1024, 1024]
 ```
 
-Examples for double tensor and half-float tensor
+Examples for double tensor and half-float tensor,
 ```python
 import fadst
 import torch
@@ -87,10 +94,10 @@ import torch
 block = 4
 
 x1 = torch.randn(1024, 1024).double().cuda()  # 2-D tensor
-dct2d = fadst.naiveDCT2D(x1, block)  # type: double
+dct2d = fadst.DCT2d(x1, block)  # type: double
 
 x2 = torch.randn(1024, 1024).half().cuda()  # 2-D tensor
-dct2d = fadst.naiveDCT2D(x1, block)  # type: half
+dct2d = fadst.DCT2d(x1, block)  # type: half
 ```
 
 

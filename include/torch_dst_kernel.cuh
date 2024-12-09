@@ -4,9 +4,10 @@
 #include "utils.h"
 
 template <typename scalar_t>
-__global__ void cudaNaiveDST2DKernel(const uint totalThreads, const scalar_t* __restrict__ input,
-                                     const uint points, scalar_t* __restrict__ output,
-                                     const uint hDim, const uint wDim) {
+__global__ void cudaNaiveDST2DAndSortCoefficientsByZigzagKernel(
+    const uint totalThreads, const scalar_t* __restrict__ input, const uint points,
+    scalar_t* __restrict__ output, const uint hDim, const uint wDim, const bool sortbyZigzag,
+    const uint* zigzag) {
   const uint idx =
       threadIdx.x + blockIdx.x * blockDim.x +
       (threadIdx.y + blockIdx.y * blockDim.y) * gridDim.x * blockDim.x +
@@ -25,7 +26,9 @@ __global__ void cudaNaiveDST2DKernel(const uint totalThreads, const scalar_t* __
       for (uint v = 0; v < points; v++) {
         uint wv = w * points + v;
 
-        uint spectralIdx = n * hwDim * p2 + hk * wDim * points + wv;
+        uint spectralIdx = (sortbyZigzag)
+                               ? n * hwDim * p2 + zigzag[k * points + v] * hwDim + h * wDim + w
+                               : n * hwDim * p2 + hk * wDim * points + wv;
 
         for (uint i = 0; i < points; i++) {
           uint hi = h * points + i;
@@ -48,9 +51,10 @@ __global__ void cudaNaiveDST2DKernel(const uint totalThreads, const scalar_t* __
 }
 
 template <typename scalar_t>
-__global__ void cudaNaiveIDST2DKernel(const uint totalThreads, const scalar_t* __restrict__ input,
-                                      const uint points, scalar_t* __restrict__ output,
-                                      const uint hDim, const uint wDim) {
+__global__ void cudaNaiveIDST2DAndRecoverCoefficientsByZigzagKernel(
+    const uint totalThreads, const scalar_t* __restrict__ input, const uint points,
+    scalar_t* __restrict__ output, const uint hDim, const uint wDim, const bool recoverbyZigzag,
+    const uint* zigzag) {
   const uint idx =
       threadIdx.x + blockIdx.x * blockDim.x +
       (threadIdx.y + blockIdx.y * blockDim.y) * gridDim.x * blockDim.x +
@@ -79,7 +83,9 @@ __global__ void cudaNaiveIDST2DKernel(const uint totalThreads, const scalar_t* _
             uint wv = w * points + v;
             scalar_t sin_j_v = sinf((j + 1.0f) * (v + 1.0f) * M_PI / (points + 1));
 
-            uint spectralIdx = n * hwDim * p2 + hk * wDim * points + wv;
+            uint spectralIdx = (recoverbyZigzag)
+                                   ? n * hwDim * p2 + zigzag[k * points + v] * hwDim + h * wDim + w
+                                   : n * hwDim * p2 + hk * wDim * points + wv;
 
             output[specialIdx] += input[spectralIdx] * (2.0f / (points + 1)) * sin_i_k * sin_j_v;
           }
