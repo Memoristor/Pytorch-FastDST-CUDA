@@ -5,19 +5,24 @@ at::Tensor cudaNaiveDST2D(const at::Tensor input, const uint points, const bool 
 at::Tensor cudaNaiveIDST2D(const at::Tensor input, const uint points, const bool recoverbyZigzag);
 
 at::Tensor naiveDST2D(const at::Tensor input, const uint points, const bool sortbyZigzag) {
-  CHECK_INPUT(input);
+  CHECK_CUDA(input);
+  CHECK_CONTIGUOUS(input);
   CHECK_TENSORDIM(input, 2);
-  at::Tensor padInput = zeroPadInputTensorToFitPointSize(input, points);
-  return cudaNaiveDST2D(padInput, points, sortbyZigzag);
+  CHECK_EVENDIV(input, -1, points);
+  CHECK_EVENDIV(input, -2, points);
+  return cudaNaiveDST2D(input, points, sortbyZigzag);
 }
 
 at::Tensor naiveIDST2D(const at::Tensor input, const uint points, const bool recoverbyZigzag) {
-  CHECK_INPUT(input);
+  CHECK_CUDA(input);
+  CHECK_CONTIGUOUS(input);
+  CHECK_EVENDIV(input, -1, points);
+  CHECK_EVENDIV(input, -2, points);
   if (recoverbyZigzag) {
     CHECK_TENSORDIM(input, 3);
+    CHECK_DIMEQUAL(input, -3, points * points);
   } else {
     CHECK_TENSORDIM(input, 2);
   }
-  at::Tensor padInput = zeroPadInputTensorToFitPointSize(input, points);
-  return cudaNaiveIDST2D(padInput, points, recoverbyZigzag);
+  return cudaNaiveIDST2D(input, points, recoverbyZigzag);
 }
