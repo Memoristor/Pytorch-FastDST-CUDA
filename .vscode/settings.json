@@ -78,7 +78,8 @@
     "sstream": "cpp",
     "cinttypes": "cpp",
     "typeindex": "cpp",
-    "variant": "cpp"
+    "variant": "cpp",
+    "__config": "cpp"
   },
   "C_Cpp.errorSquiggles": "enabled",
   "editor.formatOnSave": true,

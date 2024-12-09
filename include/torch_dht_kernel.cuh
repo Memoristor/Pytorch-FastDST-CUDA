@@ -1,17 +1,21 @@
 #ifndef __TORCH_DHT_KERNEL_CUH
 #define __TORCH_DHT_KERNEL_CUH
 
-#include "utils.h"
+#include "device_kernel.cuh"
 
 template <typename scalar_t>
 __global__ void cudaNaiveDHT2DAndSortCoefficientsByZigzagKernel(
     const uint totalThreads, const scalar_t* __restrict__ input, const uint points,
-    scalar_t* __restrict__ output, const uint hDim, const uint wDim, const bool sortbyZigzag,
-    const uint* zigzag) {
+    scalar_t* __restrict__ output, const uint hDim, const uint wDim, const bool sortbyZigzag) {
   const uint idx =
       threadIdx.x + blockIdx.x * blockDim.x +
       (threadIdx.y + blockIdx.y * blockDim.y) * gridDim.x * blockDim.x +
       (threadIdx.z + blockIdx.z * blockDim.z) * gridDim.x * gridDim.y * blockDim.x * blockDim.y;
+
+  extern __shared__ uint zigzag[];
+  bool isFirstThread = (threadIdx.x == 0 && threadIdx.y == 0 && threadIdx.z == 0);
+  if (isFirstThread && sortbyZigzag) initZigzag(zigzag, points);
+  __syncthreads();
 
   if (idx < totalThreads) {
     const uint hwDim = hDim * wDim;
@@ -55,12 +59,16 @@ __global__ void cudaNaiveDHT2DAndSortCoefficientsByZigzagKernel(
 template <typename scalar_t>
 __global__ void cudaNaiveIDHT2DAndRecoverCoefficientsByZigzagKernel(
     const uint totalThreads, const scalar_t* __restrict__ input, const uint points,
-    scalar_t* __restrict__ output, const uint hDim, const uint wDim, const bool recoverbyZigzag,
-    const uint* zigzag) {
+    scalar_t* __restrict__ output, const uint hDim, const uint wDim, const bool recoverbyZigzag) {
   const uint idx =
       threadIdx.x + blockIdx.x * blockDim.x +
       (threadIdx.y + blockIdx.y * blockDim.y) * gridDim.x * blockDim.x +
       (threadIdx.z + blockIdx.z * blockDim.z) * gridDim.x * gridDim.y * blockDim.x * blockDim.y;
+
+  extern __shared__ uint zigzag[];
+  bool isFirstThread = (threadIdx.x == 0 && threadIdx.y == 0 && threadIdx.z == 0);
+  if (isFirstThread && recoverbyZigzag) initZigzag(zigzag, points);
+  __syncthreads();
 
   if (idx < totalThreads) {
     const uint hwDim = hDim * wDim;

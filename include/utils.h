@@ -31,10 +31,9 @@ extern "C" {
   CHECK_CUDA(x);       \
   CHECK_CONTIGUOUS(x);
 
-void calculateZigzag(uint *zigzag, uint points);
-at::Tensor zeroPadInputTensorToFitPointSize(const at::Tensor input, const uint points);
-void optimalCUDABlocksAndThreadsPerBlock(const uint numTotalThreads, dim3 &numBlocks,
-                                         dim3 &threadsPerBlock);
+extern at::Tensor zeroPadInputTensorToFitPointSize(const at::Tensor input, const uint points);
+extern void optimalCUDABlocksAndThreadsPerBlock(const uint numTotalThreads, dim3 &numBlocks,
+                                                dim3 &threadsPerBlock);
 
 #if defined(__cplusplus)
 }

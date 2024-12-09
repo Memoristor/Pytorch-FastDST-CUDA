@@ -1,17 +1,12 @@
 
 #include "../include/torch_dct_kernel.cuh"
+#include "../include/utils.h"
 
 at::Tensor cudaNaiveDCT2D(const at::Tensor input, const uint points, const bool sortbyZigzag) {
   at::IntList inputSize = input.sizes();
   int height = inputSize[inputSize.size() - 2];
   int width = inputSize[inputSize.size() - 1];
   int p2 = points * points;
-
-  uint zigzag[p2] = {0};
-  uint* zigzagGPU;
-  calculateZigzag(zigzag, points);
-  CHECK_CUDA_ERROR(cudaMalloc((void**)&zigzagGPU, p2 * sizeof(uint)));
-  CHECK_CUDA_ERROR(cudaMemcpy(zigzagGPU, zigzag, p2 * sizeof(uint), cudaMemcpyHostToDevice));
 
   std::vector<int64_t> outputSize;
   if (sortbyZigzag) {
@@ -29,12 +24,13 @@ at::Tensor cudaNaiveDCT2D(const at::Tensor input, const uint points, const bool 
   uint totalThreads = input.numel() / (points * points);
   optimalCUDABlocksAndThreadsPerBlock(totalThreads, numBlocks, threadsPerBlock);
 
-  AT_DISPATCH_FLOATING_TYPES_AND_HALF(
-      input.type(), "cudaNaiveDCT2D", ([&] {
-        cudaNaiveDCT2DAndSortCoefficientsByZigzagKernel<scalar_t><<<numBlocks, threadsPerBlock>>>(
-            totalThreads, input.data_ptr<scalar_t>(), points, output.data_ptr<scalar_t>(),
-            height / points, width / points, sortbyZigzag, zigzagGPU);
-      }));
+  AT_DISPATCH_FLOATING_TYPES_AND_HALF(input.type(), "cudaNaiveDCT2D", ([&] {
+                                        cudaNaiveDCT2DAndSortCoefficientsByZigzagKernel<scalar_t>
+                                            <<<numBlocks, threadsPerBlock, p2 * sizeof(uint)>>>(
+                                                totalThreads, input.data_ptr<scalar_t>(), points,
+                                                output.data_ptr<scalar_t>(), height / points,
+                                                width / points, sortbyZigzag);
+                                      }));
 
   return output;
 }
@@ -44,12 +40,6 @@ at::Tensor cudaNaiveIDCT2D(const at::Tensor input, const uint points, const bool
   int height = inputSize[inputSize.size() - 2];
   int width = inputSize[inputSize.size() - 1];
   int p2 = points * points;
-
-  uint zigzag[p2] = {0};
-  uint* zigzagGPU;
-  calculateZigzag(zigzag, points);
-  CHECK_CUDA_ERROR(cudaMalloc((void**)&zigzagGPU, p2 * sizeof(uint)));
-  CHECK_CUDA_ERROR(cudaMemcpy(zigzagGPU, zigzag, p2 * sizeof(uint), cudaMemcpyHostToDevice));
 
   std::vector<int64_t> outputSize;
   if (recoverbyZigzag) {
@@ -71,9 +61,9 @@ at::Tensor cudaNaiveIDCT2D(const at::Tensor input, const uint points, const bool
   AT_DISPATCH_FLOATING_TYPES_AND_HALF(
       input.type(), "cudaNaiveIDCT2D", ([&] {
         cudaNaiveIDCT2DAndRecoverCoefficientsByZigzagKernel<scalar_t>
-            <<<numBlocks, threadsPerBlock>>>(totalThreads, input.data_ptr<scalar_t>(), points,
-                                             output.data_ptr<scalar_t>(), height / points,
-                                             width / points, recoverbyZigzag, zigzagGPU);
+            <<<numBlocks, threadsPerBlock, p2 * sizeof(uint)>>>(
+                totalThreads, input.data_ptr<scalar_t>(), points, output.data_ptr<scalar_t>(),
+                height / points, width / points, recoverbyZigzag);
       }));
 
   return output;

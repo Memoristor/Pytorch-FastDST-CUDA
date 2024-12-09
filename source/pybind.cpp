@@ -27,8 +27,8 @@ PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
           Parameters:
               input (torch.Tensor): An input tensor with dimensions greater than two.
               points (float): The number of points for the DCT block.
-              sortbyZigzag (bool): Whether to integrate the frequency coefficients from low 
-                to high frequency into a new dimension and place it as the third-to-last 
+              sortbyZigzag (bool): Whether to integrate the frequency coefficients from low
+                to high frequency into a new dimension and place it as the third-to-last
                 dimension. Default value is true.
 
           Returns:
@@ -49,9 +49,10 @@ PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
 
           Parameters:
               input (torch.Tensor): An input tensor with dimensions greater than three if
-                `recoverbyZigzag` is true, and a tensor with dimensions greater than two otherwise.
+                `recoverbyZigzag` is true, and a tensor with dimensions greater than two
+                otherwise.
               points (float): The number of points for the DCT block.
-              recoverbyZigzag (bool): Whether the input DCT coefficients have already been sorted 
+              recoverbyZigzag (bool): Whether the input DCT coefficients have already been sorted
                 from low frequency to high frequency. Default value is true.
 
           Returns:
@@ -74,8 +75,8 @@ PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
           Parameters:
               input (torch.Tensor): An input tensor with dimensions greater than two.
               points (float): The number of points for the DHT block.
-              sortbyZigzag (bool): Whether to integrate the frequency coefficients from low 
-                to high frequency into a new dimension and place it as the third-to-last 
+              sortbyZigzag (bool): Whether to integrate the frequency coefficients from low
+                to high frequency into a new dimension and place it as the third-to-last
                 dimension. Default value is true.
 
           Returns:
@@ -96,9 +97,10 @@ PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
 
           Parameters:
               input (torch.Tensor): An input tensor with dimensions greater than three if
-                `recoverbyZigzag` is true, and a tensor with dimensions greater than two otherwise.
+                `recoverbyZigzag` is true, and a tensor with dimensions greater than two
+                otherwise.
               points (float): The number of points for the DHT block.
-              recoverbyZigzag (bool): Whether the input DHT coefficients have already been sorted 
+              recoverbyZigzag (bool): Whether the input DHT coefficients have already been sorted
                 from low frequency to high frequency. Default value is true.
 
           Returns:
@@ -121,8 +123,8 @@ PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
           Parameters:
               input (torch.Tensor): An input tensor with dimensions greater than two.
               points (float): The number of points for the DST block.
-              sortbyZigzag (bool): Whether to integrate the frequency coefficients from low 
-                to high frequency into a new dimension and place it as the third-to-last 
+              sortbyZigzag (bool): Whether to integrate the frequency coefficients from low
+                to high frequency into a new dimension and place it as the third-to-last
                 dimension. Default value is true.
 
           Returns:
@@ -143,9 +145,10 @@ PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
 
           Parameters:
               input (torch.Tensor): An input tensor with dimensions greater than three if
-                `recoverbyZigzag` is true, and a tensor with dimensions greater than two otherwise.
+                `recoverbyZigzag` is true, and a tensor with dimensions greater than two
+                otherwise.
               points (float): The number of points for the DST block.
-              recoverbyZigzag (bool): Whether the input DST coefficients have already been sorted 
+              recoverbyZigzag (bool): Whether the input DST coefficients have already been sorted
                 from low frequency to high frequency. Default value is true.
 
           Returns:
@@ -170,7 +173,8 @@ PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
               points (float): The number of points for the frequency block.
 
           Returns:
-              torch.Tensor: A tensor whose third-to-last dimension is arranged from low to high frequency.
+              torch.Tensor: A tensor whose third-to-last dimension is arranged from low to high
+              frequency.
 
           Examples:
               >> x = torch.randn(3, 1024, 2048).cuda()
@@ -182,7 +186,7 @@ PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
 
   m.def("recover2d", &recoverCoefficients,
         R"doc(
-          Recover a tensor whose third-to-last dimension is arranged from low frequency to high 
+          Recover a tensor whose third-to-last dimension is arranged from low frequency to high
           frequency back to its original unsorted state.
 
           Parameters:
