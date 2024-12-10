@@ -6,7 +6,7 @@ import os
 
 setup(
     name='fadst',
-    version="0.3.2",
+    version="0.3.3",
     author="cjdeng",
     author_email="cjdeng@std.uestc.edu.cn",
     ext_modules=[
