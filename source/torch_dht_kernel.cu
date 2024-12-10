@@ -21,17 +21,16 @@ at::Tensor cudaNaiveDHT2D(const at::Tensor input, const uint points, const bool 
 
   dim3 numBlocks;
   dim3 threadsPerBlock;
-  uint totalThreads = input.numel() / (points * points);
+  uint totalThreads = input.numel();
   optimalCUDABlocksAndThreadsPerBlock(totalThreads, numBlocks, threadsPerBlock);
 
   AT_DISPATCH_FLOATING_TYPES_AND_HALF(input.type(), "cudaNaiveDHT2D", ([&] {
                                         cudaNaiveDHT2DAndSortCoefficientsByZigzagKernel<scalar_t>
                                             <<<numBlocks, threadsPerBlock, p2 * sizeof(uint)>>>(
-                                                totalThreads, input.data_ptr<scalar_t>(), points,
-                                                output.data_ptr<scalar_t>(), height / points,
-                                                width / points, sortbyZigzag);
+                                                totalThreads, input.data_ptr<scalar_t>(),
+                                                output.data_ptr<scalar_t>(), height, width, points,
+                                                sortbyZigzag);
                                       }));
-
   return output;
 }
 
@@ -55,15 +54,15 @@ at::Tensor cudaNaiveIDHT2D(const at::Tensor input, const uint points, const bool
 
   dim3 numBlocks;
   dim3 threadsPerBlock;
-  uint totalThreads = input.numel() / p2;
+  uint totalThreads = input.numel();
   optimalCUDABlocksAndThreadsPerBlock(totalThreads, numBlocks, threadsPerBlock);
 
   AT_DISPATCH_FLOATING_TYPES_AND_HALF(
       input.type(), "cudaNaiveIDHT2D", ([&] {
         cudaNaiveIDHT2DAndRecoverCoefficientsByZigzagKernel<scalar_t>
             <<<numBlocks, threadsPerBlock, p2 * sizeof(uint)>>>(
-                totalThreads, input.data_ptr<scalar_t>(), points, output.data_ptr<scalar_t>(),
-                height / points, width / points, recoverbyZigzag);
+                totalThreads, input.data_ptr<scalar_t>(), output.data_ptr<scalar_t>(), height,
+                width, points, recoverbyZigzag);
       }));
 
   return output;
